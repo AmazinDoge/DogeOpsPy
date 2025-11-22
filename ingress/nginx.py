@@ -18,13 +18,13 @@ def T_to_conf(T_result):
     prev_line = ""
 
     if proper_T_magic_word in T_result:
+        T_result = T_result.split(proper_T_magic_word, 1)[1]  # Trash everything before magic word.
+        T_result = re.sub(
+            r'nginx: configuration file \S+ test (?:failed|is successful)',
+            '',
+            T_result
+        )
         for line in T_result.split("\n"):
-            stripped = line.strip()
-            if stripped.startswith("nginx") and (
-                    stripped.endswith("is successful") or stripped.endswith("is ok")
-            ):
-                continue
-
             uncommented = escape_comments(line)
             if uncommented.strip() == "" and prev_line.strip() == "":
                 continue  # No 2 lines are all blanks
